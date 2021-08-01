@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+for f in *.woff2
+do
+    woff2_decompress $f
+done
+
+mv *.ttf $HOME/.local/share/fonts
+
+rm -r *.woff2

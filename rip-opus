@@ -1,0 +1,41 @@
+#! /bin/bash
+
+echo
+echo "Let's rip this CD! But first, tell me some information:"
+echo
+
+read -r -p "Album title: " ALBUM
+read -r -p "Artist: " ARTIST
+read -r -p "Year: " YEAR
+read -r -p "Genre: " GENRE
+
+TARGET_FOLDER="$HOME/Music/$ARTIST/$YEAR - $ALBUM"
+
+mkdir -p "$TARGET_FOLDER"
+
+cd "$TARGET_FOLDER" || { echo "Something's wrong, aborting..."; exit 1; }
+
+echo
+echo "Extracting uncompressed audio tracks..."
+echo
+
+cdparanoia -B
+
+echo "Compressing audio tracks with the Opus codec..."
+echo
+
+for f in *.wav
+do
+	TRACK=$(echo "$f" | cut -c6-7)
+	read -r -p "Track $TRACK title: " SONGTITLE
+	opusenc --bitrate 192 --title "$SONGTITLE" --artist "$ARTIST" --album "$ALBUM" --date "$YEAR" --tracknumber "$TRACK" --genre "$GENRE" "$f" "$TRACK - $SONGTITLE.opus"
+
+done
+
+rm -- *.wav
+
+eject /dev/sr0
+
+echo
+echo "Done! May the Force be with you!"
+echo 

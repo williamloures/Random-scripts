@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+mkdir -p PDFs
+
+for f in *.jpg
+do
+	FILENAME="${f%%.*}"
+	convert "$f" "$FILENAME.pdf"
+	gs -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/printer -sOutputFile="${FILENAME}_comprimido.pdf" "$FILENAME.pdf"
+	mv "${FILENAME}_comprimido.pdf" PDFs
+	rm "$FILENAME.pdf"
+done
+
+for f in *.jpeg
+do
+	FILENAME="${f%%.*}"
+	convert "$f" "$FILENAME.pdf"
+	gs -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/printer -sOutputFile="${FILENAME}_comprimido.pdf" "$FILENAME.pdf"
+	mv "${FILENAME}_comprimido.pdf" PDFs
+	rm "$FILENAME.pdf"
+done
+
+cd PDFs || exit
+
+for f in *_comprimido.pdf
+do
+	FILENAME="${f%_*}"
+	mv "$f" "$FILENAME.pdf"
+done

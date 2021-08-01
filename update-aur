@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+for dir in $HOME/AUR/*/
+do
+	dir=${dir%*/}
+	echo "Checking for ${dir##*/} updates..."
+	cd $dir
+	git pull
+	echo " "
+done
